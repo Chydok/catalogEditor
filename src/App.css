@@ -1,0 +1,38 @@
+.app {
+    width: 20vw;
+    height: 100vh;
+    display: block;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px solid;
+}
+
+.treeBlock {
+    border: 2px solid;
+    border-radius: 5px;
+    width: 18vw;
+    height: 30px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px;
+    cursor: grab;
+}
+
+.smallTreeBlock {
+    border: 2px solid dodgerblue;
+    border-radius: 5px;
+    width: 60px;
+    height: 10px;
+    background-color: lightblue;
+}
+
+.addTreeBlock {
+    border: 2px solid;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    justify-self: right;
+    align-self: flex-end;
+}
