@@ -16,7 +16,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 15px;
     cursor: grab;
 }
 
@@ -35,4 +34,10 @@
     text-align: center;
     justify-self: right;
     align-self: flex-end;
+}
+
+.dropBox {
+    width: 18vw;
+    min-height: 15px;
+    height: 100%;
 }
