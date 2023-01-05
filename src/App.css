@@ -1,10 +1,15 @@
 .app {
-    width: 20vw;
+    display: flex;
+}
+
+.board {
+    width: 19vw;
     height: 100vh;
     display: block;
     align-items: center;
     justify-content: center;
     border-right: 2px solid;
+    margin-right: 10px;
 }
 
 .treeBlock {
