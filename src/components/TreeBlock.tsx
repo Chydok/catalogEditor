@@ -1,56 +1,81 @@
-import React, {useState} from "react";
+import React from "react";
 import treeBlockListStore, {ItreeBlockStore} from "../stores/treeBlockListStore";
 import {observer} from "mobx-react";
 import boardStore from "../stores/boardStore";
+import BoardStore from "../stores/boardStore";
 
 function TreeBlock (props: ItreeBlockStore) {
     function dragStartHandler (e: React.DragEvent<HTMLDivElement>, treeBlock: ItreeBlockStore) {
-        e.dataTransfer.setData("currentBlock", String(treeBlock.id));
-        const target = e.currentTarget;
-        e.currentTarget.style.background = 'white';
-        setTimeout(() => {
-            target.parentElement!.style.display = 'none';
-        },0);
+        const boardList = boardStore.boardList.find((element) => {
+            return element.id === treeBlock.boardId;
+        });
+        if (typeof treeBlock.id !== "undefined") {
+            const currentIndex = boardList?.blockIdList.indexOf(treeBlock.id);
+            e.dataTransfer.setData("currentBlockIndex", String(currentIndex));
+            e.dataTransfer.setData("currentTreeBlock", String(treeBlock.id));
+            const target = e.currentTarget;
+            target.style.background = 'white';
+            setTimeout(() => {
+                target.parentElement!.style.display = 'none';
+            }, 0);
+        }
     }
     function dragEndHandler (e: React.DragEvent<HTMLDivElement>) {
         e.currentTarget.parentElement!.style.display = 'block';
     }
-    function dragLeaveHandler (e: React.DragEvent<HTMLDivElement>) {
+
+    function clickHandler(e: React.MouseEvent<HTMLDivElement>, treeBlock: ItreeBlockStore) {
+        boardStore.viewBoard(treeBlock);
+    }
+
+    function dragLeaveBlockHandler(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault();
         e.currentTarget.style.background = 'white';
     }
 
-    function dragOverHandler(e: React.DragEvent<HTMLDivElement>) {
+    function dragEnterBlockHandler(e: React.DragEvent<HTMLDivElement>, treeBlock: ItreeBlockStore) {
         e.preventDefault();
-        e.currentTarget.style.background = 'lightgray';
+        const currentTreeBlockId = Number(e.dataTransfer.getData("currentTreeBlock"));
+        if (treeBlock.id !== currentTreeBlockId) {
+            e.currentTarget.style.background = '#7094FFD1';
+        }
     }
 
-    function dropHandler(e: React.DragEvent<HTMLDivElement>) {
+    function dropBlockHandler (e: React.DragEvent<HTMLDivElement>, treeBlock: ItreeBlockStore) {
         e.preventDefault();
-        const currentBlockOrder = Number(e.dataTransfer.getData("currentBlock"));
-        let newIndex = Number(e.currentTarget.dataset.key);
-        treeBlockListStore.moveTreeBlock(newIndex, currentBlockOrder)
         e.currentTarget.style.background = 'white';
+        const board = BoardStore.boardList.find((element) => element.id === treeBlock.boardId);
+        const currentTreeBlockId = Number(e.dataTransfer.getData("currentTreeBlock"));
+        const currentTreeBlock = treeBlockListStore.treeBlockList.find((element) => element.id === currentTreeBlockId);
+        if (board && currentTreeBlock) {
+            const currentBoard = BoardStore.boardList.find((element) => element.id === currentTreeBlock.boardId);
+            if (currentBoard) {
+                if (board.boardLine === currentBoard.boardLine) {
+                    console.log(111);
+                } if (board.boardLine === currentBoard.boardLine - 1) {
+                    console.log(222);
+                }
+            }
+        }
     }
 
-    function clickHandler(e: React.MouseEvent<HTMLDivElement>, props: ItreeBlockStore) {
-        boardStore.viewBoard(props);
+    function dragOverBlockHandler(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault();
     }
 
     return (
         <div key={props.id}>
             <div
-                data-key={props.id}
-                onDrop={(e) => dropHandler(e)}
-                onDragLeave={(e) => dragLeaveHandler(e)}
-                onDragOver={(e) => dragOverHandler(e)}
-                className="dropBox"/>
-            <div
                 onDragStart={(e) => dragStartHandler(e, props)}
                 onDragEnd={(e) => dragEndHandler(e)}
                 onClick={(e) => clickHandler(e, props)}
+                onDragLeave={(e) => dragLeaveBlockHandler(e)}
+                onDragEnter={(e) => dragEnterBlockHandler(e, props)}
+                onDragOver={(e) => dragOverBlockHandler(e)}
+                onDrop={(e) => dropBlockHandler(e, props)}
                 draggable={true}
                 className="treeBlock">
-                    {props.name} {props.order}
+                    {props.name} {props.id}
             </div>
         </div>
     );

@@ -3,9 +3,7 @@ import {makeAutoObservable} from 'mobx';
 export interface ItreeBlockStore {
     id?: number;
     name?: string;
-    order?: number;
-    parentBlockId?: number;
-    boardIndex?: number;
+    boardId: number;
     childBlockList?: Array<ItreeBlockStore>;
 }
 
@@ -16,30 +14,15 @@ class treeBlockListStore {
     }
 
     addTreeBlock = (treeBlock: ItreeBlockStore) => {
-        treeBlock.id = this.treeBlockList.length + 1;
-        treeBlock.order = this.treeBlockList.length + 1;
+        treeBlock.id = this.treeBlockList.length;
         this.treeBlockList.push(treeBlock);
+        return treeBlock.id;
     }
 
     removeAllTreeBlock = () => {
         if (this.treeBlockList.length > 0) {
             this.treeBlockList = [];
         }
-    }
-
-    moveTreeBlock = (newIndex: number, oldIndex: number) => {
-        newIndex = oldIndex < newIndex ? newIndex - 2 : newIndex - 1;
-        const treeBlock: ItreeBlockStore = this.treeBlockList[oldIndex - 1];
-        this.treeBlockList.splice(oldIndex - 1,1);
-        if (treeBlock) {
-            this.treeBlockList.splice(newIndex, 0, treeBlock);
-        }
-        let count = 0;
-        this.treeBlockList.map((block) => {
-            count++;
-            block.id = count;
-            return block;
-        });
     }
 }
 
