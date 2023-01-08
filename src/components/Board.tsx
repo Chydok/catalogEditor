@@ -1,12 +1,12 @@
 import React from 'react';
-import treeBlockListStore, {ItreeBlockStore} from "../stores/treeBlockListStore";
 import {observer} from "mobx-react";
-import BoardStore, {IBoardList} from "../stores/boardStore";
-import TreeBlock from "./TreeBlock";
-import boardStore from "../stores/boardStore";
 
-const treeBlockList = treeBlockListStore.treeBlockList;
-function Board(props: IBoardList) {
+import Block from "./Block";
+import boardStore, {IBoard} from "../stores/boardListStore";
+import blockListStore, {IBlock} from "../stores/blockListStore";
+
+const blockList = blockListStore.blockList;
+function Board(props: IBoard) {
     function dragLeaveHandler (e: React.DragEvent<HTMLDivElement>) {
         e.currentTarget.style.background = 'white';
     }
@@ -14,39 +14,42 @@ function Board(props: IBoardList) {
         e.currentTarget.style.background = 'lightgray';
     }
 
-    function dropHandler(e: React.DragEvent<HTMLDivElement>, treeBlockId: number, board: IBoardList) {
+    function dragOverHandler(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault();
+    }
+
+    function dropHandler(e: React.DragEvent<HTMLDivElement>, treeBlockId: number, board: IBoard) {
         const currentBlockOrder = Number(e.dataTransfer.getData("currentBlockIndex"));
-        const newIndex = board?.blockIdList.indexOf(treeBlockId) !== -1 ? board?.blockIdList.indexOf(treeBlockId) : treeBlockId;
+        const currentBlockId = Number(e.dataTransfer.getData("currentBlockId"));
+        const newIndex = treeBlockId !== -1 ? board?.blockIdList.indexOf(treeBlockId) : props.blockIdList.length;
         if (typeof newIndex !== "undefined" && newIndex !== currentBlockOrder) {
-            boardStore.moveTreeBlock(newIndex, currentBlockOrder, board.id);
+            boardStore.sortBlock(newIndex, currentBlockOrder, board.id, currentBlockId);
             e.currentTarget.style.background = 'white';
         }
     }
 
     const endDiv = <div
-        onDrop={(e) => dropHandler(e, props.blockIdList.length > 0 ? props.blockIdList.length + 1 : 0, props)}
+        data-key={(props.blockIdList.length > 0 ? props.blockIdList.length + 1 : 0)}
+        onDrop={(e) => dropHandler(e, (props.blockIdList.length > 0 ? -1 : 0), props)}
         onDragLeave={(e) => dragLeaveHandler(e)}
-        onDragOver={(e) => dragEnterHandler(e)}
+        onDragEnter={(e) => dragEnterHandler(e)}
+        onDragOver={(e) => dragOverHandler(e)}
         className="dropBox"/>
-
-    function dragOverHandler(e: React.DragEvent<HTMLDivElement>) {
-        e.preventDefault();
-    }
 
     return (
         <div key={props.id} className="board">
             <button
-                className="addTreeBlock"
+                className="addBlockButton"
                 onClick={() => {
-                    const newBlockId = treeBlockListStore.addTreeBlock({
+                    const newBlockId = blockListStore.addBlock({
                         name: 'Test',
                         boardId: props.id
                     });
-                    BoardStore.addBlockInBoard(props, newBlockId);
+                    boardStore.addBlockInBoard(props, newBlockId);
                 }}
             >+</button>
             {props.blockIdList.map((treeBlockId, key) => {
-                const block: ItreeBlockStore | undefined = treeBlockList.find(element => element.id === treeBlockId);
+                const block: IBlock | undefined = blockList.find(element => element.id === treeBlockId);
                 return (block ?
                     <div key={treeBlockId}>
                         <div
@@ -55,7 +58,7 @@ function Board(props: IBoardList) {
                             onDragEnter={(e) => dragEnterHandler(e)}
                             onDragOver={(e) => dragOverHandler(e)}
                             className="dropBox"/>
-                        <TreeBlock
+                        <Block
                             key={key}
                             id={block.id}
                             name={block.name}

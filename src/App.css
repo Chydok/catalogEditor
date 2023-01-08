@@ -1,4 +1,20 @@
 .app {
+    display: block;
+}
+
+.addBlockButton {
+    border: 2px solid #fff;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    justify-self: right;
+    align-self: flex-end;
+    background-color: #2F7BFDFF;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.boardList {
     display: flex;
 }
 
@@ -12,7 +28,7 @@
     margin-right: 10px;
 }
 
-.treeBlock {
+.block {
     border: 2px solid;
     border-radius: 5px;
     width: 18vw;
@@ -20,25 +36,51 @@
     background-color: white;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     cursor: grab;
 }
 
-.smallTreeBlock {
-    border: 2px solid dodgerblue;
+.block button{
+    width: 55px;
+    height: 34px;
+    margin-right: -2px;
+    border-radius: 5px;
+    border: 0;
+    background-color: #2F7BFDFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+.block div{
+    margin-left: 10px;
+}
+
+.mainMenu {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid;
+    margin-bottom: 5px;
+}
+
+.mainMenu div{
+}
+
+.mainMenu div button{
+    height: 25px;
+    margin-right: 5px;
+    border: 1px solid;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.smallBlock {
+    border: 2px solid;
     border-radius: 5px;
     width: 60px;
     height: 10px;
     background-color: lightblue;
-}
-
-.addTreeBlock {
-    border: 2px solid;
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    justify-self: right;
-    align-self: flex-end;
 }
 
 .dropBox {
