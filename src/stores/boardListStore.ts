@@ -83,25 +83,23 @@ class boardListStore {
     }
 
     viewBoard = (block: IBlock | undefined) => {
-        const board = this.boardList.find(elem => elem.id === block?.boardId)
-        if (board) {
-            let find: number | undefined = -1;
+        const board = this.boardList.find(elem => elem.parentBlock === block?.id);
+        const currentBoard = this.boardList.find(elem => elem.id === block?.boardId);
+        if (currentBoard) {
             for (let item of this.boardList) {
-                if (item.boardLine > board.boardLine && item.viewBoard) {
+                if (item.boardLine > currentBoard.boardLine) {
                     item.viewBoard = false;
                 }
-                if (block?.id === item.parentBlock) {
-                    find = item.parentBlock;
-                    item.viewBoard = true;
-                }
             }
-            if (board && find === -1) {
+            if (board) {
+                board.viewBoard = true;
+            } else {
                 this.addBoard([{
                     id: this.boardList.length + 1,
                     blockIdList: [],
                     parentBlock: block?.id,
                     viewBoard: true,
-                    boardLine: board.boardLine + 1
+                    boardLine: currentBoard.boardLine + 1
                 }]);
             }
         }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC, useState} from 'react';
 import {observer} from "mobx-react";
 
 import Block from "./Block";
@@ -6,7 +6,8 @@ import boardStore, {IBoard} from "../stores/boardListStore";
 import blockListStore, {IBlock} from "../stores/blockListStore";
 
 const blockList = blockListStore.blockList;
-function Board(props: IBoard) {
+const Board: FC<IBoard> = (props: IBoard) => {
+    let [classBoardName, setClassBoardName] = useState<string>('board');
     function dragLeaveHandler (e: React.DragEvent<HTMLDivElement>) {
         e.currentTarget.style.background = 'white';
     }
@@ -28,6 +29,10 @@ function Board(props: IBoard) {
         }
     }
 
+    const changeSize = () => {
+        setClassBoardName(classBoardName === 'board' ? 'board boardEdit': 'board');
+    }
+
     const endDiv = <div
         data-key={(props.blockIdList.length > 0 ? props.blockIdList.length + 1 : 0)}
         onDrop={(e) => dropHandler(e, (props.blockIdList.length > 0 ? -1 : 0), props)}
@@ -37,17 +42,19 @@ function Board(props: IBoard) {
         className="dropBox"/>
 
     return (
-        <div key={props.id} className="board">
+        <div key={props.id} className={classBoardName}>
             <button
                 className="addBlockButton"
                 onClick={() => {
                     const newBlockId = blockListStore.addBlock({
                         name: 'Test',
-                        boardId: props.id
+                        boardId: props.id,
+                        logic: false
                     });
                     boardStore.addBlockInBoard(props, newBlockId);
                 }}
-            >+</button>
+            >+
+            </button>
             {props.blockIdList.map((treeBlockId, key) => {
                 const block: IBlock | undefined = blockList.find(element => element.id === treeBlockId);
                 return (block ?
@@ -62,8 +69,14 @@ function Board(props: IBoard) {
                             key={key}
                             id={block.id}
                             name={block.name}
-                            boardId={block.boardId}/></div>
-                 : <div/>);
+                            boardId={block.boardId}
+                            logic={block.logic}
+                            logicList={block.logicList}
+                            className="block"
+                            changeBoardSize={() => changeSize()}
+                        />
+                    </div>
+                    : <div/>);
             })}
             {endDiv}
         </div>

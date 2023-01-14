@@ -11,24 +11,24 @@ import './App.css';
 blockListStore.removeAllBlock();
 boardStore.removeAllBoards();
 
-blockListStore.addBlock({name: 'Основа 1', boardId: 1});
-blockListStore.addBlock({name: 'Основа 2', boardId: 1});
-blockListStore.addBlock({name: 'Установка 1', boardId: 2});
-blockListStore.addBlock({name: 'Установка 2', boardId: 2});
-blockListStore.addBlock({name: 'Установка 3', boardId: 2});
-blockListStore.addBlock({name: 'Установка 4', boardId: 2});
-blockListStore.addBlock({name: 'Установка 5', boardId: 3});
-blockListStore.addBlock({name: 'Установка 6', boardId: 3});
-blockListStore.addBlock({name: 'Установка 7', boardId: 3});
-blockListStore.addBlock({name: 'Установка 8', boardId: 3});
-blockListStore.addBlock({name: 'Блок 1', boardId: 4});
-blockListStore.addBlock({name: 'Блок 2', boardId: 4});
-blockListStore.addBlock({name: 'Блок 3', boardId: 4});
-blockListStore.addBlock({name: 'Блок 4', boardId: 4});
-blockListStore.addBlock({name: 'Блок 5', boardId: 5});
-blockListStore.addBlock({name: 'Блок 6', boardId: 5});
-blockListStore.addBlock({name: 'Блок 7', boardId: 5});
-blockListStore.addBlock({name: 'Блок 8', boardId: 5});
+blockListStore.addBlock({name: 'Основа 1', boardId: 1, logic: false});
+blockListStore.addBlock({name: 'Основа 2', boardId: 1, logic: false});
+blockListStore.addBlock({name: 'Установка 1', boardId: 2, logic: false});
+blockListStore.addBlock({name: 'Установка 2', boardId: 2, logic: false});
+blockListStore.addBlock({name: 'Установка 3', boardId: 2, logic: false});
+blockListStore.addBlock({name: 'Установка 4', boardId: 2, logic: false});
+blockListStore.addBlock({name: 'Установка 5', boardId: 3, logic: false});
+blockListStore.addBlock({name: 'Установка 6', boardId: 3, logic: false});
+blockListStore.addBlock({name: 'Установка 7', boardId: 3, logic: false});
+blockListStore.addBlock({name: 'Установка 8', boardId: 3, logic: false});
+blockListStore.addBlock({name: 'Блок 1', boardId: 4, logic: false});
+blockListStore.addBlock({name: 'Блок 2', boardId: 4, logic: false});
+blockListStore.addBlock({name: 'Блок 3', boardId: 4, logic: false});
+blockListStore.addBlock({name: 'Блок 4', boardId: 4, logic: false});
+blockListStore.addBlock({name: 'Блок 5', boardId: 5, logic: false});
+blockListStore.addBlock({name: 'Блок 6', boardId: 5, logic: false});
+blockListStore.addBlock({name: 'Блок 7', boardId: 5, logic: false});
+blockListStore.addBlock({name: 'Блок 8', boardId: 5, logic: false});
 
 boardStore.addBoard([
     {id: 1, blockIdList: [0,1], viewBoard: true, boardLine: 1},

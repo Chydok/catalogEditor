@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {observer} from "mobx-react";
 
-function MainMenu () {
+const MainMenu: FC = () => {
     return (
         <div className="mainMenu">
             <div>

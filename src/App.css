@@ -19,8 +19,8 @@
 }
 
 .board {
-    width: 19vw;
-    height: 100vh;
+    width: 20vw;
+    height: 95vh;
     display: block;
     align-items: center;
     justify-content: center;
@@ -28,31 +28,52 @@
     margin-right: 10px;
 }
 
+.boardEdit {
+    width: 30vw;
+}
+
 .block {
     border: 2px solid;
     border-radius: 5px;
-    width: 18vw;
-    height: 30px;
+    width: 19vw;
+    min-height: 34px;
     background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: block;
     cursor: grab;
+    padding-left: 5px;
+}
+
+.blockInserted {
+    width: 18vw;
+    margin: 5px 0 5px 7px;
+}
+
+.blockEdit {
+    width: 29vw;
+}
+
+.blockDiv {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    align-items: center;
 }
 
 .block button{
-    width: 55px;
+    width: 40px;
     height: 34px;
     margin-right: -2px;
-    border-radius: 5px;
+    border-radius: 0 5px 5px 0;
     border: 0;
+    border-right: 2px solid black;
     background-color: #2F7BFDFF;
     color: #fff;
     cursor: pointer;
 }
 
-.block div{
-    margin-left: 10px;
+.editIcon {
+    height: 20px;
+    width: 20px;
 }
 
 .mainMenu {
