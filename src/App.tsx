@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {observer} from "mobx-react";
 
 import Board from "./components/Board";
@@ -40,6 +40,23 @@ boardStore.addBoard([
 
 const boardList: Array<IBoard> | undefined = boardStore.boardList;
 function App() {
+    let [selectedBlockIdList, setSelectedBlockIdList] = useState<Array<number>>([]);
+    let [selectedBoardId, setSelectedBoardId] = useState<number>();
+
+    const addSelectedBlockList = (blockId: number) => {
+        selectedBlockIdList.push(blockId)
+        setSelectedBlockIdList(selectedBlockIdList);
+    }
+
+    const removeSelectedBlockId = (blockId: number) => {
+        selectedBlockIdList.splice(selectedBlockIdList.indexOf(blockId));
+        setSelectedBlockIdList(selectedBlockIdList);
+    }
+
+    const updateSelectedBoardId = (boardId: number) => {
+        setSelectedBoardId(boardId);
+    }
+
     return (
         <div className="app">
             <MainMenu />
@@ -53,6 +70,11 @@ function App() {
                                 blockIdList={board.blockIdList}
                                 viewBoard={board.viewBoard}
                                 boardLine={board.boardLine}
+                                selectedBoardId={selectedBoardId}
+                                selectedBlockList={selectedBlockIdList}
+                                addSelectedBlockList={addSelectedBlockList}
+                                removeSelectedBlockId={removeSelectedBlockId}
+                                updateSelectedBoardId={updateSelectedBoardId}
                             />
                         );
                     }

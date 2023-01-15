@@ -48,6 +48,10 @@
     margin: 5px 0 5px 7px;
 }
 
+.blockSelected {
+    background: dodgerblue;
+}
+
 .blockEdit {
     width: 29vw;
 }

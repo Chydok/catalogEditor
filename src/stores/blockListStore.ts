@@ -55,6 +55,7 @@ class blockListStore {
 
         if (newLogicBlock?.id && !block.logic) {
             currentBoard?.blockIdList.push(newLogicBlock.id);
+            return newLogicBlock.id;
         }
     }
 }

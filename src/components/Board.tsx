@@ -6,7 +6,14 @@ import boardStore, {IBoard} from "../stores/boardListStore";
 import blockListStore, {IBlock} from "../stores/blockListStore";
 
 const blockList = blockListStore.blockList;
-const Board: FC<IBoard> = (props: IBoard) => {
+interface IBoardComponent extends IBoard {
+    selectedBlockList: Array<number>;
+    selectedBoardId: number|undefined;
+    addSelectedBlockList: (blockId: number) => void;
+    removeSelectedBlockId: (blockId: number) => void;
+    updateSelectedBoardId: (boardId: number) => void;
+}
+const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
     let [classBoardName, setClassBoardName] = useState<string>('board');
     function dragLeaveHandler (e: React.DragEvent<HTMLDivElement>) {
         e.currentTarget.style.background = 'white';
@@ -19,13 +26,16 @@ const Board: FC<IBoard> = (props: IBoard) => {
         e.preventDefault();
     }
 
-    function dropHandler(e: React.DragEvent<HTMLDivElement>, treeBlockId: number, board: IBoard) {
-        const currentBlockOrder = Number(e.dataTransfer.getData("currentBlockIndex"));
-        const currentBlockId = Number(e.dataTransfer.getData("currentBlockId"));
-        const newIndex = treeBlockId !== -1 ? board?.blockIdList.indexOf(treeBlockId) : props.blockIdList.length;
-        if (typeof newIndex !== "undefined" && newIndex !== currentBlockOrder) {
-            boardStore.sortBlock(newIndex, currentBlockOrder, board.id, currentBlockId);
-            e.currentTarget.style.background = 'white';
+    function dropHandler(e: React.DragEvent<HTMLDivElement>, BlockId: number, board: IBoard) {
+        const newIndex = BlockId !== -1 ? board?.blockIdList.indexOf(BlockId) : props.blockIdList.length;
+        for (let currentBlockId of props.selectedBlockList) {
+            if (typeof newIndex !== "undefined" && BlockId !== currentBlockId) {
+                boardStore.sortBlock(newIndex, currentBlockId, board.id);
+                e.currentTarget.style.background = 'white';
+            }
+        }
+        for (let currentBlockId of props.selectedBlockList) {
+            props.removeSelectedBlockId(currentBlockId);
         }
     }
 
@@ -55,25 +65,30 @@ const Board: FC<IBoard> = (props: IBoard) => {
                 }}
             >+
             </button>
-            {props.blockIdList.map((treeBlockId, key) => {
-                const block: IBlock | undefined = blockList.find(element => element.id === treeBlockId);
+            {props.blockIdList.map((blockId, key) => {
+                const block: IBlock | undefined = blockList.find(element => element.id === blockId);
                 return (block ?
-                    <div key={treeBlockId}>
+                    <div key={blockId}>
                         <div
-                            onDrop={(e) => dropHandler(e, treeBlockId, props)}
+                            onDrop={(e) => dropHandler(e, blockId, props)}
                             onDragLeave={(e) => dragLeaveHandler(e)}
                             onDragEnter={(e) => dragEnterHandler(e)}
                             onDragOver={(e) => dragOverHandler(e)}
                             className="dropBox"/>
                         <Block
                             key={key}
+                            className="block"
                             id={block.id}
                             name={block.name}
                             boardId={block.boardId}
                             logic={block.logic}
                             logicList={block.logicList}
-                            className="block"
+                            selectedBlockList={props.selectedBlockList}
+                            selectedBoardId={props.selectedBoardId}
                             changeBoardSize={() => changeSize()}
+                            addSelectedBlockList={props.addSelectedBlockList}
+                            removeSelectedBlockId={props.removeSelectedBlockId}
+                            updateSelectedBoardId={props.updateSelectedBoardId}
                         />
                     </div>
                     : <div/>);

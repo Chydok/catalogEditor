@@ -37,6 +37,16 @@ class boardListStore {
             from: this.boardList.find(((elem) => elem.parentBlock === fromBlock.id)),
             to: this.boardList.find(((elem) => elem.parentBlock === toBlock.id))
         };
+        if (!currentBoards.from) {
+            this.addBoard([{
+                id: this.boardList.length + 1,
+                blockIdList: [],
+                parentBlock: fromBlock?.id,
+                viewBoard: true,
+                boardLine: board.boardLine + 1
+            }]);
+            currentBoards.from = this.boardList.find(((elem) => elem.parentBlock === fromBlock.id));
+        }
         if (currentBoards.from && !currentBoards.to) {
             this.addBoard([{
                 id: this.boardList.length + 1,
@@ -56,7 +66,7 @@ class boardListStore {
             this.viewBoard(toBlock);
             const delIndexBoard = this.boardList.findIndex((elem) => elem.id === currentBoards.from!.id);
             this.boardList.splice(delIndexBoard, 1);
-            if (fromBlock.id) {
+            if (typeof fromBlock.id !== "undefined") {
                 const boardOldBlock = this.boardList.find((elem) => elem.id === fromBlock.boardId);
                 if (boardOldBlock) {
                     let delIndex = boardOldBlock.blockIdList.indexOf(fromBlock.id);
@@ -111,17 +121,21 @@ class boardListStore {
         }
     }
 
-    sortBlock = (newIndex: number, oldIndex: number, selectBoardId: number, currentBlockId: number) => {
+    sortBlock = (newIndex: number, currentBlockId: number, selectBoardId: number) => {
         const selectBoard = this.boardList.find((element) => element.id === selectBoardId);
         const currentBlock = blockListStore.blockList.find((element) => element.id === currentBlockId);
         if (selectBoard && currentBlock) {
             if (selectBoard.id === currentBlock.boardId) {
+                const oldIndex = selectBoard.blockIdList.indexOf(currentBlockId);
                 newIndex = oldIndex < newIndex ? newIndex - 1 : newIndex;
-                const treeBlock: number[] = selectBoard.blockIdList.splice(oldIndex, 1);
-                selectBoard.blockIdList.splice(newIndex, 0, treeBlock[0]);
+                if (oldIndex !== newIndex) {
+                    const treeBlock: number[] = selectBoard.blockIdList.splice(oldIndex, 1);
+                    selectBoard.blockIdList.splice(newIndex, 0, treeBlock[0]);
+                }
             } else {
                 const oldBoard = this.boardList.find((element) => element.id === currentBlock.boardId);
                 if (oldBoard && oldBoard.boardLine === selectBoard.boardLine) {
+                    const oldIndex = oldBoard.blockIdList.indexOf(currentBlockId);
                     const block: number[] = oldBoard.blockIdList.splice(oldIndex, 1);
                     currentBlock.boardId = selectBoard.id;
                     selectBoard.blockIdList.splice(newIndex, 0, block[0]);

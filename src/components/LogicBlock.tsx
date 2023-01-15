@@ -1,12 +1,17 @@
 import React, {FC} from "react";
 import {observer} from "mobx-react";
 
+import Block from "./Block";
 import {IBlock} from "../stores/blockListStore";
 import blockListStore from "../stores/blockListStore";
-import Block from "./Block";
 
 interface ILogicBlockComponent extends IBlock {
-    changeBoardSize: () => void
+    selectedBlockList: Array<number>;
+    selectedBoardId: number|undefined;
+    changeBoardSize: () => void;
+    addSelectedBlockList: (blockId: number) => void;
+    removeSelectedBlockId: (blockId: number) => void;
+    updateSelectedBoardId: (boardId: number) => void;
 }
 const LogicBlock: FC<ILogicBlockComponent> = (props: ILogicBlockComponent) => {
     return (
@@ -21,8 +26,13 @@ const LogicBlock: FC<ILogicBlockComponent> = (props: ILogicBlockComponent) => {
                             name={insertedBlock.name}
                             boardId={insertedBlock.boardId}
                             className="block blockInserted"
+                            selectedBlockList={props.selectedBlockList}
+                            selectedBoardId={props.selectedBoardId}
                             logic={false}
+                            addSelectedBlockList={() => props.addSelectedBlockList}
+                            removeSelectedBlockId={() => props.removeSelectedBlockId}
                             changeBoardSize={() => props.changeBoardSize()}
+                            updateSelectedBoardId={props.updateSelectedBoardId}
                         />
                     );
                 } else {
