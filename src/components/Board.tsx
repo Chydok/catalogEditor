@@ -26,10 +26,10 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
         e.preventDefault();
     }
 
-    function dropHandler(e: React.DragEvent<HTMLDivElement>, BlockId: number, board: IBoard) {
-        const newIndex = BlockId !== -1 ? board?.blockIdList.indexOf(BlockId) : props.blockIdList.length;
+    function dropHandler(e: React.DragEvent<HTMLDivElement>, blockId: number, board: IBoard) {
+        const newIndex = blockId !== -1 ? board?.blockIdList.indexOf(blockId) : props.blockIdList.length;
         for (let currentBlockId of props.selectedBlockList) {
-            if (typeof newIndex !== "undefined" && BlockId !== currentBlockId) {
+            if (typeof newIndex !== "undefined" && blockId !== currentBlockId) {
                 boardStore.sortBlock(newIndex, currentBlockId, board.id);
                 e.currentTarget.style.background = 'white';
             }
@@ -67,7 +67,7 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
             </button>
             {props.blockIdList.map((blockId, key) => {
                 const block: IBlock | undefined = blockList.find(element => element.id === blockId);
-                return (block ?
+                return (typeof block !== "undefined" && block.del !== true ?
                     <div key={blockId}>
                         <div
                             onDrop={(e) => dropHandler(e, blockId, props)}

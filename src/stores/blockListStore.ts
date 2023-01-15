@@ -7,6 +7,7 @@ export interface IBlock {
     boardId: number;
     logic: boolean;
     logicList?: Array<number>;
+    del?: boolean;
 }
 
 class blockListStore {

@@ -9,7 +9,7 @@ export interface IBoard {
     parentBlock?: number;
     blockIdList: Array<number>;
     viewBoard: boolean;
-    boardLine: number,
+    boardLine: number;
 }
 class boardListStore {
     boardList: Array<IBoard> = [];
@@ -127,10 +127,35 @@ class boardListStore {
         if (selectBoard && currentBlock) {
             if (selectBoard.id === currentBlock.boardId) {
                 const oldIndex = selectBoard.blockIdList.indexOf(currentBlockId);
-                newIndex = oldIndex < newIndex ? newIndex - 1 : newIndex;
-                if (oldIndex !== newIndex) {
-                    const treeBlock: number[] = selectBoard.blockIdList.splice(oldIndex, 1);
-                    selectBoard.blockIdList.splice(newIndex, 0, treeBlock[0]);
+                if (oldIndex !== -1) {
+                    newIndex = oldIndex < newIndex ? newIndex - 1 : newIndex;
+                    if (oldIndex !== newIndex) {
+                        const blockId: number[] = selectBoard.blockIdList.splice(oldIndex, 1);
+                        selectBoard.blockIdList.splice(newIndex, 0, blockId[0]);
+                    }
+                } else {
+                    for (let selectBoardId of selectBoard.blockIdList) {
+                        const findBlock = blockListStore.blockList.find(item => item.id === selectBoardId);
+                        if (findBlock && findBlock.logic && findBlock.logicList) {
+                            const findIndex = findBlock.logicList.indexOf(currentBlockId);
+                            if (findIndex !== -1) {
+                                const blockId: number[] = findBlock.logicList?.splice(findIndex, 1);
+                                if (blockId) {
+                                    selectBoard.blockIdList.splice(newIndex, 0, blockId[0]);
+                                }
+                                if (findBlock.logicList.length === 0) {
+                                    if (findBlock.id != null) {
+                                        const findIndex = selectBoard.blockIdList.indexOf(findBlock.id);
+                                        if (findIndex !== -1) {
+                                            selectBoard.blockIdList.splice(findIndex, 1);
+                                        }
+                                        findBlock.del = true;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
             } else {
                 const oldBoard = this.boardList.find((element) => element.id === currentBlock.boardId);

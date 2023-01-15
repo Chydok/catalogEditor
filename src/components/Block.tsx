@@ -79,7 +79,6 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
         e.preventDefault();
         e.currentTarget.style.background = 'white';
         if (e.currentTarget.className === "block blockEdit" || block.logic) {
-            console.log(props.selectedBlockList)
             blockListStore.addInLogicBlock(block, props.selectedBlockList);
             if (e.currentTarget.className === "block blockEdit") {
                 props.changeBoardSize();

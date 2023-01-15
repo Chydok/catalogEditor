@@ -29,8 +29,8 @@ const LogicBlock: FC<ILogicBlockComponent> = (props: ILogicBlockComponent) => {
                             selectedBlockList={props.selectedBlockList}
                             selectedBoardId={props.selectedBoardId}
                             logic={false}
-                            addSelectedBlockList={() => props.addSelectedBlockList}
-                            removeSelectedBlockId={() => props.removeSelectedBlockId}
+                            addSelectedBlockList={props.addSelectedBlockList}
+                            removeSelectedBlockId={props.removeSelectedBlockId}
                             changeBoardSize={() => props.changeBoardSize()}
                             updateSelectedBoardId={props.updateSelectedBoardId}
                         />
