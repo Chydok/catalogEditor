@@ -7,9 +7,11 @@ import boardStore, {IBoard} from "./stores/boardListStore";
 import MainMenu from "./components/MainMenu";
 
 import './App.css';
+import boardLineStore from "./stores/boardLineStore";
 
 blockListStore.removeAllBlock();
 boardStore.removeAllBoards();
+boardLineStore.removeAllLines();
 
 blockListStore.addBlock({name: 'Основа 1', boardId: 1, logic: false});
 blockListStore.addBlock({name: 'Основа 2', boardId: 1, logic: false});

@@ -51,20 +51,30 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
         onDragOver={(e) => dragOverHandler(e)}
         className="dropBox"/>
 
+    const pencilIcon = require("../icons/pencil.png");
     return (
         <div key={props.id} className={classBoardName}>
-            <button
-                className="addBlockButton"
-                onClick={() => {
-                    const newBlockId = blockListStore.addBlock({
-                        name: 'Test',
-                        boardId: props.id,
-                        logic: false
-                    });
-                    boardStore.addBlockInBoard(props, newBlockId);
-                }}
-            >+
-            </button>
+            <div className="boardLineHeader">
+                <button
+                    className="addBlockButton"
+                    onClick={() => {
+                        const newBlockId = blockListStore.addBlock({
+                            name: 'Test',
+                            boardId: props.id,
+                            logic: false
+                        });
+                        boardStore.addBlockInBoard(props, newBlockId);
+                    }}
+                >+
+                </button>
+                <div>12345</div>
+                <button className="editBlockButton"
+                        onClick={() => {
+                            console.log(props.boardLine);
+                        }}>
+                    <img src={pencilIcon} className="pencilIcon" alt={"edit"}/>
+                </button>
+            </div>
             {props.blockIdList.map((blockId, key) => {
                 const block: IBlock | undefined = blockList.find(element => element.id === blockId);
                 return (typeof block !== "undefined" && block.del !== true ?
