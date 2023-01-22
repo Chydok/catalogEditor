@@ -2,12 +2,12 @@ import React, {useState} from 'react';
 import {observer} from "mobx-react";
 
 import Board from "./components/Board";
+import MainMenu from "./components/MainMenu";
 import blockListStore from "./stores/blockListStore";
 import boardStore, {IBoard} from "./stores/boardListStore";
-import MainMenu from "./components/MainMenu";
-
-import './App.css';
 import boardLineStore from "./stores/boardLineStore";
+
+import './styles/App.css';
 
 blockListStore.removeAllBlock();
 boardStore.removeAllBoards();
@@ -42,11 +42,11 @@ boardStore.addBoard([
 
 const boardList: Array<IBoard> | undefined = boardStore.boardList;
 function App() {
-    let [selectedBlockIdList, setSelectedBlockIdList] = useState<Array<number>>([]);
-    let [selectedBoardId, setSelectedBoardId] = useState<number>();
+    const [selectedBlockIdList, setSelectedBlockIdList] = useState<Array<number>>([]);
+    const [selectedBoardId, setSelectedBoardId] = useState<number>();
 
     const addSelectedBlockList = (blockId: number) => {
-        selectedBlockIdList.push(blockId)
+        selectedBlockIdList.push(blockId);
         setSelectedBlockIdList(selectedBlockIdList);
     }
 

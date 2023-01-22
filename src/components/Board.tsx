@@ -4,6 +4,8 @@ import {observer} from "mobx-react";
 import Block from "./Block";
 import boardStore, {IBoard} from "../stores/boardListStore";
 import blockListStore, {IBlock} from "../stores/blockListStore";
+import boardLineStore from "../stores/boardLineStore";
+import BoardLineForm from "./BoardLineForm";
 
 const blockList = blockListStore.blockList;
 interface IBoardComponent extends IBoard {
@@ -14,7 +16,9 @@ interface IBoardComponent extends IBoard {
     updateSelectedBoardId: (boardId: number) => void;
 }
 const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
-    let [classBoardName, setClassBoardName] = useState<string>('board');
+    const [classBoardName, setClassBoardName] = useState<string>('board');
+    const [modalFormActive, setModalFormActive] = useState<boolean>(false);
+    const boardLine = boardLineStore.boardLineList.find(item => item.id === props.id);
     function dragLeaveHandler (e: React.DragEvent<HTMLDivElement>) {
         e.currentTarget.style.background = 'white';
     }
@@ -43,6 +47,10 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
         setClassBoardName(classBoardName === 'board' ? 'board boardEdit': 'board');
     }
 
+    const viewModalBoardForm = (boardLineId: number) => {
+        setModalFormActive(true);
+    }
+
     const endDiv = <div
         data-key={(props.blockIdList.length > 0 ? props.blockIdList.length + 1 : 0)}
         onDrop={(e) => dropHandler(e, (props.blockIdList.length > 0 ? -1 : 0), props)}
@@ -54,6 +62,11 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
     const pencilIcon = require("../icons/pencil.png");
     return (
         <div key={props.id} className={classBoardName}>
+            <BoardLineForm
+                boardLineId={props.boardLine}
+                active={modalFormActive}
+                setActive={setModalFormActive}
+            />
             <div className="boardLineHeader">
                 <button
                     className="addBlockButton"
@@ -67,10 +80,10 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
                     }}
                 >+
                 </button>
-                <div>12345</div>
+                <div>{boardLine ? boardLine.name : ''}</div>
                 <button className="editBlockButton"
                         onClick={() => {
-                            console.log(props.boardLine);
+                            viewModalBoardForm(props.boardLine);
                         }}>
                     <img src={pencilIcon} className="pencilIcon" alt={"edit"}/>
                 </button>
@@ -95,6 +108,8 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
                             logicList={block.logicList}
                             selectedBlockList={props.selectedBlockList}
                             selectedBoardId={props.selectedBoardId}
+                            blockFormEdit={boardLine?.boardStructure || []}
+                            boardLine={props.boardLine}
                             changeBoardSize={() => changeSize()}
                             addSelectedBlockList={props.addSelectedBlockList}
                             removeSelectedBlockId={props.removeSelectedBlockId}

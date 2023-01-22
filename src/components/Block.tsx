@@ -5,11 +5,14 @@ import LogicBlock from "./LogicBlock";
 import treeBlockListStore, {IBlock} from "../stores/blockListStore";
 import boardListStore from "../stores/boardListStore";
 import blockListStore from "../stores/blockListStore";
+import boardLineStore, {IBlockStructure} from "../stores/boardLineStore";
 
 interface IBlockComponent extends IBlock {
     className: string;
     selectedBlockList: Array<number>;
     selectedBoardId: number|undefined;
+    blockFormEdit?: Array<IBlockStructure>;
+    boardLine?: number;
     changeBoardSize: () => void;
     addSelectedBlockList: (blockId: number) => void;
     removeSelectedBlockId: (blockId: number) => void;
@@ -17,6 +20,7 @@ interface IBlockComponent extends IBlock {
 }
 const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
     const [classBlockName, setClassBlockName] = useState(props.className);
+    const boardLine = boardLineStore.boardLineList.find(item => item.id === props.boardLine);
 
     function clickHandler(e: React.MouseEvent<HTMLDivElement>, Block: IBlock) {
         e.stopPropagation();
@@ -31,6 +35,9 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
             setClassBlockName(classBlockName.indexOf('blockSelected') !== -1 ? props.className : classBlockName + ' blockSelected');
         } else {
             if (!Block.logic) {
+                if (boardLine && boardLine.lastLine) {
+                    return true;
+                }
                 boardListStore.viewBoard(Block);
             }
         }
@@ -79,10 +86,12 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
         e.preventDefault();
         e.currentTarget.style.background = 'white';
         if (e.currentTarget.className === "block blockEdit" || block.logic) {
-            blockListStore.addInLogicBlock(block, props.selectedBlockList);
-            if (e.currentTarget.className === "block blockEdit") {
-                props.changeBoardSize();
-                setClassBlockName(props.className);
+            if (boardLine?.logicLine) {
+                blockListStore.addInLogicBlock(block, props.selectedBlockList);
+                if (e.currentTarget.className === "block blockEdit") {
+                    props.changeBoardSize();
+                    setClassBlockName(props.className);
+                }
             }
         } else {
             for (let currentBlockId of props.selectedBlockList) {
@@ -143,6 +152,7 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
                         name={props.name}
                         boardId={props.boardId}
                         logicList={props.logicList}
+                        boardLine={props.boardLine}
                         selectedBlockList={props.selectedBlockList}
                         selectedBoardId={props.selectedBoardId}
                         changeBoardSize={props.changeBoardSize}
@@ -150,6 +160,27 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
                         removeSelectedBlockId={props.removeSelectedBlockId}
                         updateSelectedBoardId={props.updateSelectedBoardId}
                         logic={false}/>
+                    : ''}
+                {(classBlockName === props.className + ' blockEdit' && !props.logic) ?
+                    <div className="editBlockForm" onClick={e => e.stopPropagation()}>
+                        <div key={props.id} className="blockFormItem">
+                            <label>
+                                Имя:
+                                <input type="text" value={props.name} readOnly={true}/>
+                            </label>
+                        </div>
+                        {props.blockFormEdit?.map((item => {
+                            return (
+                                <div key={item.nameEn} className="blockFormItem">
+                                    {['text', 'number', 'date'].indexOf(item.type) !== -1 ? (
+                                            <label>
+                                                {item.nameRu}:
+                                                <input type={item.type}/>
+                                            </label>)
+                                        : ''}
+                                </div>)
+                        }))}
+                    </div>
                     : ''}
             </div>
         </div>

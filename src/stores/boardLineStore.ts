@@ -8,8 +8,8 @@ export interface IBlockStructure {
 
 export interface IBoardLine {
     id: number;
-    name: string;
-    boardStructure: Array<IBlockStructure>;
+    name?: string;
+    boardStructure?: Array<IBlockStructure>;
     lastLine?: boolean;
     logicLine?: boolean;
 }
@@ -22,9 +22,20 @@ class boardLineStore {
     }
 
     addBlockLine = (boardLine: IBoardLine) => {
+        boardLine.name = boardLine.name ? boardLine.name : '';
         boardLine.lastLine = boardLine.lastLine ? boardLine.lastLine : false;
         boardLine.logicLine = boardLine.logicLine ? boardLine.logicLine : false;
         this.boardLineList.push(boardLine);
+    }
+
+    updateBlockLine = (boardLine: IBoardLine) => {
+        const findBoardLine = this.boardLineList.find(item => item.id === boardLine.id);
+        if (findBoardLine) {
+            findBoardLine.name = boardLine.name;
+            findBoardLine.lastLine = boardLine.lastLine;
+            findBoardLine.logicLine = boardLine.logicLine;
+            findBoardLine.boardStructure = boardLine.boardStructure;
+        }
     }
 
     removeAllLines = () => {
