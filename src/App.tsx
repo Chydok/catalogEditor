@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import {observer} from "mobx-react";
 
 import Board from "./components/Board";
 import MainMenu from "./components/MainMenu";
+import ModalForm from "./components/ModalForm";
+import BoardLineForm from "./components/BoardLineForm";
+
 import blockListStore from "./stores/blockListStore";
 import boardStore, {IBoard} from "./stores/boardListStore";
 import boardLineStore from "./stores/boardLineStore";
@@ -44,6 +47,9 @@ const boardList: Array<IBoard> | undefined = boardStore.boardList;
 function App() {
     const [selectedBlockIdList, setSelectedBlockIdList] = useState<Array<number>>([]);
     const [selectedBoardId, setSelectedBoardId] = useState<number>();
+    const [modalFormActive, setModalFormActive] = useState<boolean>(false);
+    const [boardLineForm, setBoardLineForm] = useState<ReactNode>();
+    const [currentBoardLine, setCurrentBoardLine] = useState<number>(-1);
 
     const addSelectedBlockList = (blockId: number) => {
         selectedBlockIdList.push(blockId);
@@ -55,13 +61,27 @@ function App() {
         setSelectedBlockIdList(selectedBlockIdList);
     }
 
-    const updateSelectedBoardId = (boardId: number) => {
-        setSelectedBoardId(boardId);
-    }
+    useEffect(() => {
+        const viewModalBoardForm = (newState: boolean) => {
+            setBoardLineForm(<BoardLineForm boardLineId={currentBoardLine} active={newState}/>)
+            setModalFormActive(newState);
+        }
+        if (modalFormActive) {
+            viewModalBoardForm(true);
+        } else {
+            viewModalBoardForm(false);
+        }
+    }, [currentBoardLine, modalFormActive])
 
     return (
         <div className="app">
             <MainMenu />
+            <ModalForm
+                active={modalFormActive}
+                setModalFormActive={setModalFormActive}
+            >
+                {boardLineForm}
+            </ModalForm>
             <div className="boardList">
                 {boardList?.map(board => {
                     if (board.viewBoard) {
@@ -74,9 +94,11 @@ function App() {
                                 boardLine={board.boardLine}
                                 selectedBoardId={selectedBoardId}
                                 selectedBlockList={selectedBlockIdList}
+                                setCurrentBoardLine={setCurrentBoardLine}
                                 addSelectedBlockList={addSelectedBlockList}
                                 removeSelectedBlockId={removeSelectedBlockId}
-                                updateSelectedBoardId={updateSelectedBoardId}
+                                updateSelectedBoardId={setSelectedBoardId}
+                                setModalFormActive={setModalFormActive}
                             />
                         );
                     }

@@ -5,7 +5,6 @@ import Block from "./Block";
 import boardStore, {IBoard} from "../stores/boardListStore";
 import blockListStore, {IBlock} from "../stores/blockListStore";
 import boardLineStore from "../stores/boardLineStore";
-import BoardLineForm from "./BoardLineForm";
 
 const blockList = blockListStore.blockList;
 interface IBoardComponent extends IBoard {
@@ -14,11 +13,12 @@ interface IBoardComponent extends IBoard {
     addSelectedBlockList: (blockId: number) => void;
     removeSelectedBlockId: (blockId: number) => void;
     updateSelectedBoardId: (boardId: number) => void;
+    setCurrentBoardLine:(boardLineId: number) => void;
+    setModalFormActive:(active: boolean) => void;
 }
 const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
     const [classBoardName, setClassBoardName] = useState<string>('board');
-    const [modalFormActive, setModalFormActive] = useState<boolean>(false);
-    const boardLine = boardLineStore.boardLineList.find(item => item.id === props.id);
+    const boardLine = boardLineStore.boardLineList.find(item => item.id === props.boardLine);
     function dragLeaveHandler (e: React.DragEvent<HTMLDivElement>) {
         e.currentTarget.style.background = 'white';
     }
@@ -47,10 +47,6 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
         setClassBoardName(classBoardName === 'board' ? 'board boardEdit': 'board');
     }
 
-    const viewModalBoardForm = (boardLineId: number) => {
-        setModalFormActive(true);
-    }
-
     const endDiv = <div
         data-key={(props.blockIdList.length > 0 ? props.blockIdList.length + 1 : 0)}
         onDrop={(e) => dropHandler(e, (props.blockIdList.length > 0 ? -1 : 0), props)}
@@ -62,11 +58,6 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
     const pencilIcon = require("../icons/pencil.png");
     return (
         <div key={props.id} className={classBoardName}>
-            <BoardLineForm
-                boardLineId={props.boardLine}
-                active={modalFormActive}
-                setActive={setModalFormActive}
-            />
             <div className="boardLineHeader">
                 <button
                     className="addBlockButton"
@@ -83,7 +74,8 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
                 <div>{boardLine ? boardLine.name : ''}</div>
                 <button className="editBlockButton"
                         onClick={() => {
-                            viewModalBoardForm(props.boardLine);
+                            props.setCurrentBoardLine(props.boardLine);
+                            props.setModalFormActive(true);
                         }}>
                     <img src={pencilIcon} className="pencilIcon" alt={"edit"}/>
                 </button>
