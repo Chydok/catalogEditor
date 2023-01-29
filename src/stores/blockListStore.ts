@@ -8,6 +8,7 @@ export interface IBlock {
     logic: boolean;
     logicList?: Array<number>;
     del?: boolean;
+    form?: Array<{nameEn: string; nameRu: string; type: string; value: string}>;
 }
 
 class blockListStore {
@@ -57,6 +58,21 @@ class blockListStore {
         if (newLogicBlock?.id && !block.logic) {
             currentBoard?.blockIdList.push(newLogicBlock.id);
             return newLogicBlock.id;
+        }
+    }
+
+    updateFormInfo = (blockId: number, addObj: {nameEn: string; nameRu: string; type: string; value: string}) => {
+        const block = this.blockList.find(item => item.id === blockId);
+        if (block) {
+            const findField = block.form?.find(item => item.nameEn === addObj.nameEn);
+            if (findField) {
+                findField.value = addObj.value;
+            } else {
+                if (!block.form) {
+                    block.form = [];
+                }
+                block.form?.push(addObj);
+            }
         }
     }
 }

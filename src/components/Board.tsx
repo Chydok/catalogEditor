@@ -98,6 +98,7 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
                             boardId={block.boardId}
                             logic={block.logic}
                             logicList={block.logicList}
+                            form={block.form}
                             selectedBlockList={props.selectedBlockList}
                             selectedBoardId={props.selectedBoardId}
                             blockFormEdit={boardLine?.boardStructure || []}

@@ -28,7 +28,7 @@
 }
 
 .boardEdit {
-    width: 30vw;
+    width: 25vw;
 }
 
 .block {
@@ -43,8 +43,17 @@
 }
 
 .editBlockForm {
-    display: flex;
+    display: block;
     margin: 10px;
+}
+
+.blockFormItem {
+    margin: 5px;
+}
+
+.blockFormItem div{
+    display: grid;
+    grid-template-columns: 50% 50%;
 }
 
 .blockInserted {
@@ -57,7 +66,7 @@
 }
 
 .blockEdit {
-    width: 29vw;
+    width: 24vw;
 }
 
 .blockDiv {
