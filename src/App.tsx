@@ -16,24 +16,24 @@ blockListStore.removeAllBlock();
 boardStore.removeAllBoards();
 boardLineStore.removeAllLines();
 
-blockListStore.addBlock({name: 'Основа 1', boardId: 1, logic: false});
-blockListStore.addBlock({name: 'Основа 2', boardId: 1, logic: false});
-blockListStore.addBlock({name: 'Установка 1', boardId: 2, logic: false});
-blockListStore.addBlock({name: 'Установка 2', boardId: 2, logic: false});
-blockListStore.addBlock({name: 'Установка 3', boardId: 2, logic: false});
-blockListStore.addBlock({name: 'Установка 4', boardId: 2, logic: false});
-blockListStore.addBlock({name: 'Установка 5', boardId: 3, logic: false});
-blockListStore.addBlock({name: 'Установка 6', boardId: 3, logic: false});
-blockListStore.addBlock({name: 'Установка 7', boardId: 3, logic: false});
-blockListStore.addBlock({name: 'Установка 8', boardId: 3, logic: false});
-blockListStore.addBlock({name: 'Блок 1', boardId: 4, logic: false});
-blockListStore.addBlock({name: 'Блок 2', boardId: 4, logic: false});
-blockListStore.addBlock({name: 'Блок 3', boardId: 4, logic: false});
-blockListStore.addBlock({name: 'Блок 4', boardId: 4, logic: false});
-blockListStore.addBlock({name: 'Блок 5', boardId: 5, logic: false});
-blockListStore.addBlock({name: 'Блок 6', boardId: 5, logic: false});
-blockListStore.addBlock({name: 'Блок 7', boardId: 5, logic: false});
-blockListStore.addBlock({name: 'Блок 8', boardId: 5, logic: false});
+blockListStore.addBlock({boardId: 1, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Основа 1'}]});
+blockListStore.addBlock({boardId: 1, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Основа 2'}]});
+blockListStore.addBlock({boardId: 2, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 1'}]});
+blockListStore.addBlock({boardId: 2, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 2'}]});
+blockListStore.addBlock({boardId: 2, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 3'}]});
+blockListStore.addBlock({boardId: 2, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 4'}]});
+blockListStore.addBlock({boardId: 3, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 5'}]});
+blockListStore.addBlock({boardId: 3, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 6'}]});
+blockListStore.addBlock({boardId: 3, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 7'}]});
+blockListStore.addBlock({boardId: 3, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Установка 8'}]});
+blockListStore.addBlock({boardId: 4, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 1'}]});
+blockListStore.addBlock({boardId: 4, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 2'}]});
+blockListStore.addBlock({boardId: 4, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 3'}]});
+blockListStore.addBlock({boardId: 4, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 4'}]});
+blockListStore.addBlock({boardId: 5, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 5'}]});
+blockListStore.addBlock({boardId: 5, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 6'}]});
+blockListStore.addBlock({boardId: 5, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 7'}]});
+blockListStore.addBlock({boardId: 5, logic: false, form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Блок 8'}]});
 
 boardStore.addBoard([
     {id: 1, blockIdList: [0,1], viewBoard: true, boardLine: 1},
@@ -42,6 +42,11 @@ boardStore.addBoard([
     {id: 4, blockIdList: [10,11,12,13], parentBlock: 5, viewBoard: false, boardLine: 3},
     {id: 5, blockIdList: [14,15,16,17], parentBlock: 6, viewBoard: false, boardLine: 3}
 ]);
+
+boardLineStore.addBlockLine({id: 1, name: '', boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]});
+boardLineStore.addBlockLine({id: 2, name: '', boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]});
+boardLineStore.addBlockLine({id: 3, name: '', boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]});
+boardLineStore.addBlockLine({id: 4, name: '', boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]});
 
 const boardList: Array<IBoard> | undefined = boardStore.boardList;
 function App() {

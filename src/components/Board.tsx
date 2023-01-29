@@ -63,9 +63,9 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
                     className="addBlockButton"
                     onClick={() => {
                         const newBlockId = blockListStore.addBlock({
-                            name: 'Test',
                             boardId: props.id,
-                            logic: false
+                            logic: false,
+                            form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Новый элемент'}]
                         });
                         boardStore.addBlockInBoard(props, newBlockId);
                     }}
@@ -94,7 +94,6 @@ const Board: FC<IBoardComponent> = (props: IBoardComponent) => {
                             key={key}
                             className="block"
                             id={block.id}
-                            name={block.name}
                             boardId={block.boardId}
                             logic={block.logic}
                             logicList={block.logicList}

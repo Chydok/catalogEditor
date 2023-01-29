@@ -28,7 +28,7 @@
 }
 
 .boardEdit {
-    width: 25vw;
+    width: 25.5vw;
 }
 
 .block {
@@ -67,6 +67,10 @@
 
 .blockEdit {
     width: 24vw;
+}
+
+.blockEditLogic {
+    width: 25vw;
 }
 
 .blockDiv {

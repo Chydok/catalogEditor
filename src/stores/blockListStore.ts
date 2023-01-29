@@ -3,7 +3,6 @@ import boardListStore from "./boardListStore";
 
 export interface IBlock {
     id?: number;
-    name?: string;
     boardId: number;
     logic: boolean;
     logicList?: Array<number>;
@@ -31,7 +30,12 @@ class blockListStore {
 
     addInLogicBlock = (block: IBlock, addBlockIdList: Array<number>) => {
         const newLogicBlockId = !block.logic ?
-            this.addBlock({name: 'Логический блок', boardId: block.boardId, logic: true, logicList: []})
+            this.addBlock({
+                boardId: block.boardId,
+                logic: true,
+                logicList: [],
+                form: [{nameEn: 'name', nameRu: 'Имя', type: 'text', value: 'Логический блок'}]
+            })
             : block.id;
         const newLogicBlock = this.blockList.find((item) => item.id === newLogicBlockId);
         if (block.id != null && !block.logic && newLogicBlock) {

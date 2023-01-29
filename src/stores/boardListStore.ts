@@ -2,6 +2,7 @@ import {makeAutoObservable} from 'mobx';
 import {ReactElement} from "react";
 
 import blockListStore, {IBlock} from "./blockListStore";
+import boardLineStore from "./boardLineStore";
 
 export interface IBoard {
     children?: Array<ReactElement>;
@@ -104,6 +105,14 @@ class boardListStore {
             if (board) {
                 board.viewBoard = true;
             } else {
+                const findLine = boardLineStore.boardLineList.find(line => line.id === currentBoard.boardLine + 1);
+                if (!findLine) {
+                    boardLineStore.addBlockLine({
+                        id: currentBoard.boardLine + 1,
+                        name: '',
+                        boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]
+                    });
+                }
                 this.addBoard([{
                     id: this.boardList.length + 1,
                     blockIdList: [],

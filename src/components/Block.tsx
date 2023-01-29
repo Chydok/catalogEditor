@@ -19,11 +19,13 @@ interface IBlockComponent extends IBlock {
     addSelectedBlockList: (blockId: number) => void;
     removeSelectedBlockId: (blockId: number) => void;
     updateSelectedBoardId: (boardId: number) => void;
+    setLogicBlockClass?: (className: string) => void;
 }
 
 const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
     const [classBlockName, setClassBlockName] = useState(props.className);
     const [blockFormInfo, setBlockFormInfo] = useState<Array<{nameEn: string; nameRu: string; type: string; value: string}>>([]);
+    const fieldInfoName = props.form?.find(fieldBlock => fieldBlock.nameEn === 'name');
 
     useEffect(() => {
         if (props.form) {
@@ -77,12 +79,14 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
 
     function dragLeaveBlockHandler(e: React.DragEvent<HTMLDivElement>) {
         e.preventDefault();
-        e.currentTarget.style.background = 'white';
+        if (e.currentTarget.parentElement) {
+            e.currentTarget.parentElement.style.background = 'white';
+        }
     }
 
     function dragEnterBlockHandler(e: React.DragEvent<HTMLDivElement>, selectBlock: IBlock) {
         e.preventDefault();
-        if (selectBlock.id !== undefined && props.selectedBlockList.indexOf(selectBlock.id) !== -1) {
+        if (selectBlock.id !== undefined && props.selectedBlockList.indexOf(selectBlock.id) === -1) {
             e.currentTarget.style.background = '#B1C3FDD1';
         }
         boardListStore.viewBoard(selectBlock);
@@ -132,6 +136,9 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
     function viewBlockInfoCLick(e: React.MouseEvent<HTMLButtonElement>, props: IBlockComponent) {
         e.stopPropagation();
         props.changeBoardSize();
+        if (typeof props.setLogicBlockClass !== "undefined") {
+            props.setLogicBlockClass(classBlockName !== props.className + ' blockEdit' ? 'block blockEditLogic' : 'block');
+        }
         setClassBlockName(
             classBlockName !== props.className + ' blockEdit'
                 ? props.className + ' blockEdit'
@@ -160,14 +167,15 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
                 onDragStart={(e) => dragStartHandler(e, props)}
                 onDragEnd={(e) => dragEndHandler(e, props)}
                 onClick={(e) => clickHandler(e, props)}
-                onDragLeave={(e) => dragLeaveBlockHandler(e)}
                 onDragEnter={(e) => dragEnterBlockHandler(e, props)}
                 onDragOver={(e) => dragOverBlockHandler(e)}
                 onDrop={(e) => dropBlockHandler(e, props)}
                 draggable={true}
                 className={classBlockName}>
-                <div className="blockDiv">
-                    {props.name}
+                <div
+                    onDragLeave={(e) => dragLeaveBlockHandler(e)}
+                    className="blockDiv">
+                    {fieldInfoName?.value}
                     <button onClick={(e) => viewBlockInfoCLick(e, props)}>
                         <img src={editIcon} className="editIcon" alt={"edit"}/>
                     </button>
@@ -175,26 +183,21 @@ const Block: FC<IBlockComponent> = (props: IBlockComponent) => {
                 {props.logic ?
                     <LogicBlock
                         id={props.id}
-                        name={props.name}
                         boardId={props.boardId}
                         logicList={props.logicList}
                         boardLine={props.boardLine}
                         selectedBlockList={props.selectedBlockList}
                         selectedBoardId={props.selectedBoardId}
+                        blockFormEdit={props.blockFormEdit || []}
                         changeBoardSize={props.changeBoardSize}
                         addSelectedBlockList={props.addSelectedBlockList}
                         removeSelectedBlockId={props.removeSelectedBlockId}
                         updateSelectedBoardId={props.updateSelectedBoardId}
+                        setLogicBlockEdit={setClassBlockName}
                         logic={false}/>
                     : ''}
                 {(classBlockName === props.className + ' blockEdit' && !props.logic) ?
                     <div className="editBlockForm" onClick={e => e.stopPropagation()}>
-                        <div key={props.id} className="blockFormItem">
-                            <div>
-                                <label>Имя</label>
-                                <input type="text" defaultValue={props.name}/>
-                            </div>
-                        </div>
                         {props.blockFormEdit?.map((item => {
                             const fieldInfo = blockFormInfo.find(fieldBlock => fieldBlock.nameEn === item.nameEn)
                             return (
