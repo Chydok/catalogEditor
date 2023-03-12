@@ -11,6 +11,7 @@ import boardStore, {IBoard} from "./stores/boardListStore";
 import boardLineStore from "./stores/boardLineStore";
 
 import './styles/App.css';
+import ForceGraph from "./components/D3Form";
 
 blockListStore.removeAllBlock();
 boardStore.removeAllBoards();
@@ -87,6 +88,7 @@ function App() {
             >
                 {boardLineForm}
             </ModalForm>
+            <ForceGraph />
             <div className="boardList">
                 {boardList?.map(board => {
                     if (board.viewBoard) {
