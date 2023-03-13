@@ -2,38 +2,23 @@ import React, {useEffect, useMemo, useState} from "react";
 import ReactFauxDom from 'react-faux-dom'
 import * as d3 from "d3";
 
-const ForceGraph = () => {
+const ViewPanel = () => {
     const [animatedNodes, setAnimatedNodes] = useState([]);
-    const [animatedLinks, setAnimatedLinks] = useState([]);
 
     const nodes = useMemo(
         () =>
-            [{id: "test1", r: 20, x: 20, y: 20}, {id: "test2", r: 20, x: 50, y: 20}, {id: "test3", r: 20, x: 80, y: 20}, {id: "test4", r: 20, x: 110, y: 20}, {id: "test5", r: 20, x: 140, y: 20}].map(el => {
+            [{id: "test1", r: 50, x: 100, y: 20}, {id: "test2", r: 50, x: 200, y: 20}, {id: "test3", r: 50, x: 300, y: 20}].map(el => {
                 return el;
             }),
         []
     );
-    const links = [{source: nodes[0],target: nodes[1]}, {source: nodes[1],target: nodes[2]}, {source: nodes[2],target: nodes[3]}, {source: nodes[3],target: nodes[4]}]
+    const links = [{source: nodes[0],target: nodes[1]}, {source: nodes[1],target: nodes[2]}]
 
     const graph = new ReactFauxDom.Element('svg');
 
     d3.select("svg")
       .attr("width", '100%')
-      .attr("height", '550px')
-
-    const rects = d3
-        .select(graph)
-        .selectAll('rect')
-        .data(nodes);
-
-    rects.enter()
-        .append('rect')
-        .attr("fill", 'black')
-        .attr('width', (d) => d.r)
-        .attr('height', (d) => d.r)
-        .attr('x', (d) => d.x)
-        .attr('y', (d) => d.y)
-        .attr('id', (d) => d.id);
+      .attr("height", '100%')
 
     const link = d3
         .select(graph)
@@ -46,6 +31,20 @@ const ForceGraph = () => {
         .attr("y2", d => d.target.y + d.target.r / 2)
         .attr('stroke', 'black')
         .classed("link", true);
+
+    const rects = d3
+        .select(graph)
+        .selectAll('rect')
+        .data(nodes);
+
+    rects.enter()
+        .append('rect')
+        .attr("fill", 'orange')
+        .attr('width', (d) => d.r)
+        .attr('height', (d) => d.r)
+        .attr('x', (d) => d.x)
+        .attr('y', (d) => d.y)
+        .attr('id', (d) => d.id);
 
     // @ts-ignore
     useEffect(() => {
@@ -60,26 +59,22 @@ const ForceGraph = () => {
         }
         // @ts-ignore
         const dragged = (event, d) => {
-            d3.select('#' + d.id)
-                .attr('x', event.sourceEvent.x - delta.x)
-                .attr('y', event.sourceEvent.y - delta.y);
+            d.x = event.sourceEvent.x - delta.x;
+            d.y = event.sourceEvent.y - delta.y;
         }
 
         const dragEnd = () => {
             simulation.alphaTarget(0).restart();
         }
 
-        const simulation = d3
-            .forceSimulation()
+        const simulation = d3.forceSimulation()
             .nodes(nodes)
-            .force("charge", d3.forceManyBody())
-            .force("link", d3.forceLink(links));
+            //.force("charge", d3.forceManyBody())
+            //.force("link", d3.forceLink(links));
 
         simulation.on("tick", () => {
             // @ts-ignore
             setAnimatedNodes([...simulation.nodes()]);
-            // @ts-ignore
-            setAnimatedLinks([...d3.selectAll('line')]);
         });
 
         simulation.alpha(0.1).restart();
@@ -98,4 +93,4 @@ const ForceGraph = () => {
     return graph!.toReact();
 }
 
-export default ForceGraph;
+export default ViewPanel;

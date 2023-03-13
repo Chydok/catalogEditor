@@ -1,0 +1,58 @@
+.mnemoMain {
+    height: 0;
+    margin-bottom: 7px;
+    transition: all 700ms;
+}
+
+.mnemoMainHalf {
+    height: 60vh;
+}
+
+.mnemoMainFull {
+    height: 95vh;
+}
+
+.mnemoPanel {
+    opacity: 0;
+    display: grid;
+    grid-template-columns: 15% 85%;
+    border: 1px solid gray;
+    border-radius: 0 0 5px 5px;
+    height: 97%;
+    transition: all 700ms;
+}
+.active{
+    opacity: 1;
+}
+
+.mnemoEditPanel {
+    border-right: 2px solid gray;
+}
+
+.viewPanelDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -12px;
+}
+
+.viewPanelUp {
+    display: flex;
+    height: 20px;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.viewPanelDown {
+    display: flex;
+    height: 20px;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.mnemoEditPanelHeader {
+    display: flex;
+    justify-content: center;
+}
