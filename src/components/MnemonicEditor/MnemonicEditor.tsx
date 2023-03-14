@@ -2,8 +2,7 @@ import React, {useState} from "react";
 import ViewPanel from "./ViewPanel";
 import EditPanel from "./EditPanel";
 
-import '../../styles/MnemonicPanel.css'
-import {active} from "d3";
+import '../../styles/MnemonicPanel.css';
 
 const MnemonicEditor = () => {
     const [menuStyle, setMenyStyle] = useState('mnemoMain');
