@@ -6,6 +6,7 @@ export interface IMnemoNode {
     y: number;
     width: number;
     height: number;
+    active: boolean;
 }
 
 export interface IMnemoLine {
@@ -35,10 +36,20 @@ class mnemoNodeStore {
         }
     }
 
+    removeLine = (line: IMnemoLine) => {
+        const lineIndex = this.lineList.findIndex(item => item.id === line.id);
+        this.lineList.splice(lineIndex, 1);
+    }
+
     changeCoords = (id: string, x: number, y: number) => {
         const target = this.nodeList.find(item => item.id === id);
         target!.x = x;
         target!.y = y;
+    }
+
+    setActive = (node: IMnemoNode) => {
+        const target = this.nodeList.find(item => item.id === node.id);
+        target!.active = !target!.active;
     }
 }
 

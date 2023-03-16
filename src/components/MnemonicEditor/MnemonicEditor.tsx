@@ -7,35 +7,36 @@ import '../../styles/MnemonicPanel.css';
 const MnemonicEditor = () => {
     const [menuStyle, setMenyStyle] = useState('mnemoMain');
     const [panelStyle, setPanelStyle] = useState('mnemoPanel');
+    const [activeNode, setActiveNode] = useState<Array<string>>([]);
     const panelDown = () => {
-        setMenyStyle(prevState => {
-            if (prevState === 'mnemoMain') {
-                return prevState + ' mnemoMainHalf';
-            } else if (prevState === 'mnemoMain mnemoMainHalf') {
-                return prevState + ' mnemoMainFull';
-            }
-            return prevState;
-
-        });
+        setMenyStyle(prevState => (prevState === 'mnemoMain') ?
+                'mnemoMain mnemoMainHalf' : 'mnemoMain mnemoMainHalf mnemoMainFull'
+        );
         setPanelStyle(prevState => prevState === 'mnemoPanel' ? prevState + ' active' : prevState);
     }
 
     const panelUp = () => {
-        setMenyStyle(prevState => {
-            if (prevState === 'mnemoMain mnemoMainHalf mnemoMainFull') {
-                return 'mnemoMain mnemoMainHalf'
-            } else if (prevState === 'mnemoMain mnemoMainHalf') {
-                return 'mnemoMain';
-            }
-            return prevState;
-        });
+        setMenyStyle(prevState => (prevState === 'mnemoMain mnemoMainHalf mnemoMainFull') ?
+                'mnemoMain mnemoMainHalf' : 'mnemoMain'
+        );
         setPanelStyle(prevState => menuStyle === 'mnemoMain mnemoMainHalf' ? 'mnemoPanel' : prevState);
     }
+
+    const editActiveNode = (newActiveNodes: string) => {
+        const findIndex = activeNode.findIndex(item => item == newActiveNodes);
+        if (findIndex == -1) {
+            setActiveNode(prevState => [...prevState, newActiveNodes]);
+        } else {
+            activeNode.splice(findIndex, 1);
+            setActiveNode(activeNode.splice(findIndex, 1));
+        }
+    }
+
     return (
         <div className={menuStyle}>
             <div className={panelStyle}>
-                <EditPanel/>
-                <ViewPanel/>
+                <EditPanel activeNode={activeNode}/>
+                <ViewPanel activeNode={activeNode} setActiveNode={editActiveNode}/>
             </div>
             <div className="viewPanelDiv">
                 <button className="viewPanelDown" onClick={panelDown}>Вниз</button>

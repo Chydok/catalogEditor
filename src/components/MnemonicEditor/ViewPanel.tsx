@@ -1,12 +1,15 @@
-import {useEffect} from "react";
+import {useEffect, useMemo, useState} from "react";
 import ReactFauxDom from 'react-faux-dom'
 import {observer} from "mobx-react";
 import * as d3 from "d3";
 
 import mnemoNodeStore, {IMnemoNode} from "../../stores/mnemoNodeStore";
 import {D3DragEvent} from "d3-drag";
-
-const ViewPanel = () => {
+interface IViewPanelProps {
+    activeNode: Array<string>;
+    setActiveNode: Function;
+}
+const ViewPanel = (props: IViewPanelProps) => {
     const nodes = mnemoNodeStore.nodeList;
     const links = mnemoNodeStore.lineList;
 
@@ -35,11 +38,13 @@ const ViewPanel = () => {
     rects.enter()
         .append('rect')
         .attr("fill", 'orange')
+        .attr('stroke', 'black')
         .attr('width', (d) => d.width)
         .attr('height', (d) => d.height)
         .attr('x', (d) => d.x)
         .attr('y', (d) => d.y)
-        .attr('id', (d) => d.id);
+        .attr('id', (d) => d.id)
+        .attr('stroke', (d) => d.active ? 'red' : 'black');
 
     useEffect(() => {
         const delta = {x: 0, y: 0};
@@ -60,12 +65,18 @@ const ViewPanel = () => {
             //simulation.alphaTarget(0).restart();
         }
 
-        d3.selectAll('rect').data(mnemoNodeStore.nodeList).call(d3
-            .drag<any, IMnemoNode>()
+        d3.selectAll('rect')
+            .data(mnemoNodeStore.nodeList)
+            .on("click", (event, d) => {
+                if (event.defaultPrevented) return;
+                mnemoNodeStore.setActive(d);
+                props.setActiveNode(d.id);
+            }).call(
+            d3.drag<any, IMnemoNode>()
                 .on("start", dragStart)
                 .on("drag", dragged)
                 .on("end", dragEnd));
-    }, [nodes, links]);
+    }, [graph, nodes, links]);
 
     return graph!.toReact();
 }
