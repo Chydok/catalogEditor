@@ -20,9 +20,11 @@
     border-radius: 0 0 5px 5px;
     height: 97%;
     transition: all 700ms;
+    pointer-events: none;
 }
 .active{
     opacity: 1;
+    pointer-events: auto;
 }
 
 .mnemoEditPanel {
@@ -50,6 +52,17 @@
     width: 100px;
     justify-content: center;
     align-items: center;
+}
+
+.mnemoEditPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mnemoEditPanel button{
+    width: 150px;
+    margin: 5px;
 }
 
 .mnemoEditPanelHeader {

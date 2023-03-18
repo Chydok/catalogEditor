@@ -51,9 +51,9 @@ boardLineStore.addBlockLine({id: 3, name: '', boardStructure: [{nameEn: 'name', 
 boardLineStore.addBlockLine({id: 4, name: '', boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]});
 
 [
-    {id: 'test1', width: 50, height: 50, x: 100, y: 20, active: false},
-    {id: 'test2', width: 50, height: 50, x: 200, y: 20, active: false},
-    {id: 'test3', width: 50, height: 50, x: 300, y: 20, active: false}
+    {id: 'test1', width: 100, height: 40, x: 100, y: 20, active: false},
+    {id: 'test2', width: 100, height: 40, x: 250, y: 20, active: false},
+    {id: 'test3', width: 100, height: 40, x: 400, y: 20, active: false}
 ].map(el => mnemoNodeStore.addNode(el));
 [
     {source: 'test1', target: 'test2'},

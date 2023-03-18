@@ -10,7 +10,7 @@ export interface IMnemoNode {
 }
 
 export interface IMnemoLine {
-    id: string|number;
+    id: string | number;
     source: IMnemoNode;
     target: IMnemoNode;
 }
@@ -18,6 +18,7 @@ export interface IMnemoLine {
 class mnemoNodeStore {
     nodeList: Array<IMnemoNode> = [];
     lineList: Array<IMnemoLine> = [];
+
     constructor() {
         makeAutoObservable(this);
     }
@@ -26,7 +27,7 @@ class mnemoNodeStore {
         this.nodeList.push(node);
     }
 
-    addLine = (line: {source: string;target: string;}) => {
+    addLine = (line: { source: string; target: string; }) => {
         const id = this.lineList.length + 1;
         const source = this.nodeList.find(item => item.id === line.source);
         const target = this.nodeList.find(item => item.id === line.target);

@@ -1,42 +1,55 @@
-import {useEffect, useMemo, useState} from "react";
 import ReactFauxDom from 'react-faux-dom'
 import {observer} from "mobx-react";
 import * as d3 from "d3";
 
 import mnemoNodeStore, {IMnemoNode} from "../../stores/mnemoNodeStore";
 import {D3DragEvent} from "d3-drag";
+import {useEffect} from "react";
+
 interface IViewPanelProps {
-    activeNode: Array<string>;
-    setActiveNode: Function;
+
 }
+
 const ViewPanel = (props: IViewPanelProps) => {
+    const curve = d3.curveBumpY;
     const nodes = mnemoNodeStore.nodeList;
     const links = mnemoNodeStore.lineList;
 
     const graph = new ReactFauxDom.Element('svg');
 
     d3.select("svg")
-      .attr("width", '100%')
-      .attr("height", '100%')
+        .attr("width", '100%')
+        .attr("height", '100%')
 
     d3.select(graph)
-        .selectAll(".link")
+        .selectAll("path")
         .data(links)
-        .join("line")
-        .attr("x1", d => d.source.x + d.source.width / 2)
-        .attr("y1", d => d.source.y + d.source.height / 2)
-        .attr("x2", d => d.target.x + d.target.width / 2)
-        .attr("y2", d => d.target.y + d.target.height / 2)
+        .join("path")
         .attr('stroke', 'black')
-        .classed("link", true);
+        .attr('fill', 'none')
+        .attr('d', d3.link<any, IMnemoNode>(curve)
+            .x(d => d.x + d.width / 2)
+            .y(d => d.y + d.height / 2));
 
     const rects = d3
         .select(graph)
-        .selectAll('rect')
-        .data(nodes);
+        .selectAll('g')
+        .data(nodes)
+        .join('g')
 
-    rects.enter()
-        .append('rect')
+    rects.append('rect')
+        .attr('width', (d) => d.width + 8)
+        .attr('height', (d) => d.height + 8)
+        .attr('x', (d) => d.x - 4)
+        .attr('y', (d) => d.y - 4)
+        .attr("fill", 'none')
+        .attr('stroke', (d) => d.active ? 'blue' : 'none')
+        .attr('stroke-width', 3)
+        .attr('rx', 5)
+        .attr('ry', 5)
+        .attr('stroke-dasharray', 4);
+
+    rects.append('rect')
         .attr("fill", 'orange')
         .attr('stroke', 'black')
         .attr('width', (d) => d.width)
@@ -44,7 +57,18 @@ const ViewPanel = (props: IViewPanelProps) => {
         .attr('x', (d) => d.x)
         .attr('y', (d) => d.y)
         .attr('id', (d) => d.id)
-        .attr('stroke', (d) => d.active ? 'red' : 'black');
+        .attr('stroke', 'black')
+        .style('border-radius', '15px')
+        .attr('rx', 5)
+        .attr('ry', 5);
+
+    rects.append('text')
+        .attr('x', d => d.x + 3)
+        .attr('y', d => d.y + d.height / 1.7)
+        .attr('stroke', 'black')
+        .attr('stroke-width', 0.1)
+        .attr('pointer-events', 'none')
+        .text(d => d.id);
 
     useEffect(() => {
         const delta = {x: 0, y: 0};
@@ -56,27 +80,27 @@ const ViewPanel = (props: IViewPanelProps) => {
         }
 
         const dragged = (event: D3DragEvent<SVGRectElement, IMnemoNode, IMnemoNode>, d: IMnemoNode) => {
-            const x = event.sourceEvent.x - delta.x;
-            const y = event.sourceEvent.y - delta.y;
+            const moveX = event.sourceEvent.x - delta.x;
+            const moveY = event.sourceEvent.y - delta.y;
+            const x = moveX > 0 ? moveX : 0;
+            const y = moveY > 0 ? moveY : 0;
             mnemoNodeStore.changeCoords(d.id, x, y);
         }
 
         const dragEnd = () => {
             //simulation.alphaTarget(0).restart();
         }
-
-        d3.selectAll('rect')
-            .data(mnemoNodeStore.nodeList)
+        d3.selectAll('g')
+            .data(nodes)
             .on("click", (event, d) => {
                 if (event.defaultPrevented) return;
                 mnemoNodeStore.setActive(d);
-                props.setActiveNode(d.id);
-            }).call(
-            d3.drag<any, IMnemoNode>()
+            })
+            .call(d3.drag<any, IMnemoNode>()
                 .on("start", dragStart)
                 .on("drag", dragged)
                 .on("end", dragEnd));
-    }, [graph, nodes, links]);
+    }, [graph, nodes, links, props]);
 
     return graph!.toReact();
 }
