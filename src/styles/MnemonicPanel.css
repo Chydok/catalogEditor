@@ -22,7 +22,8 @@
     transition: all 700ms;
     pointer-events: none;
 }
-.active{
+
+.active {
     opacity: 1;
     pointer-events: auto;
 }

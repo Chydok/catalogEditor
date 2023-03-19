@@ -52,6 +52,10 @@ class mnemoNodeStore {
         const target = this.nodeList.find(item => item.id === node.id);
         target!.active = !target!.active;
     }
+
+    newGroupWithActiveNode = (nodes: Array<string>) => {
+
+    }
 }
 
 export default new mnemoNodeStore();

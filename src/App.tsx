@@ -13,6 +13,7 @@ import boardLineStore from "./stores/boardLineStore";
 import './styles/App.css';
 import MnemonicEditor from "./components/MnemonicEditor/MnemonicEditor";
 import mnemoNodeStore from "./stores/mnemoNodeStore";
+import {min} from "d3";
 
 blockListStore.removeAllBlock();
 boardStore.removeAllBoards();
@@ -50,15 +51,21 @@ boardLineStore.addBlockLine({id: 2, name: '', boardStructure: [{nameEn: 'name', 
 boardLineStore.addBlockLine({id: 3, name: '', boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]});
 boardLineStore.addBlockLine({id: 4, name: '', boardStructure: [{nameEn: 'name', nameRu: 'Имя', type: 'text'}]});
 
-[
-    {id: 'test1', width: 100, height: 40, x: 100, y: 20, active: false},
-    {id: 'test2', width: 100, height: 40, x: 250, y: 20, active: false},
-    {id: 'test3', width: 100, height: 40, x: 400, y: 20, active: false}
-].map(el => mnemoNodeStore.addNode(el));
-[
-    {source: 'test1', target: 'test2'},
-    {source: 'test2', target: 'test3'}
-].map(el => mnemoNodeStore.addLine(el));
+let line = 0;
+let minus = 0;
+const itemTest = 10;
+for (let i = 0; i < itemTest; i++) {
+    if ((i - minus) * 150 > 1450) {
+        minus += 10;
+        line += 1;
+    }
+    mnemoNodeStore.addNode({id: 'rect' + i, width: 100, height: 40, x: 100 + (i - minus) * 150, y: 20 + line * 50, active: false});
+}
+for (let i = 0; i < itemTest; i++) {
+    if (i > 0) {
+        mnemoNodeStore.addLine({source: 'rect' + i, target: 'rect' + (i-1)})
+    }
+}
 
 
 const boardList: Array<IBoard> | undefined = boardStore.boardList;

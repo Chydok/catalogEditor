@@ -11,7 +11,7 @@ interface IViewPanelProps {
 }
 
 const ViewPanel = (props: IViewPanelProps) => {
-    const curve = d3.curveBumpY;
+    const curve = d3.curveStep;
     const nodes = mnemoNodeStore.nodeList;
     const links = mnemoNodeStore.lineList;
 
@@ -100,7 +100,7 @@ const ViewPanel = (props: IViewPanelProps) => {
                 .on("start", dragStart)
                 .on("drag", dragged)
                 .on("end", dragEnd));
-    }, [graph, nodes, links, props]);
+    }, [graph, nodes, links]);
 
     return graph!.toReact();
 }
