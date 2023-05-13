@@ -4,27 +4,63 @@ import * as d3 from "d3";
 
 import mnemoNodeStore, {IMnemoNode} from "../../stores/mnemoNodeStore";
 import {D3DragEvent} from "d3-drag";
-import {useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
 
-interface IViewPanelProps {
-
-}
-
-const ViewPanel = (props: IViewPanelProps) => {
+const ViewPanel = () => {
     const curve = d3.curveStep;
-    const nodes = mnemoNodeStore.nodeList;
-    const links = mnemoNodeStore.lineList;
+    const currentBoard = useRef<HTMLDivElement>(null);
+    const [mainDivWidth, setMainDivWidth] = useState<number>(0);
+    const [mainDivHeigth, setMainDivHeigth] = useState<number>(0);
+    const [scrollLeft, setScrollLeft] = useState<number>(0);
+    const [scrollTop, setScrollTop] = useState<number>(0);
 
+    const filtredNodes = mnemoNodeStore.nodeList.filter((rect) => {
+        if (currentBoard.current) {
+            const parrentDivWidth: number = mainDivWidth;
+            const parrentDivHeight: number = mainDivHeigth;
+            const x1 = rect.x;
+            const x2 = rect.x + rect.width;
+            const y1 = rect.y;
+            const y2 = rect.y + rect.height;
+            if ((x2 > scrollLeft && y2 > scrollTop) && (x1 < scrollLeft + parrentDivWidth && y1 < scrollTop + parrentDivHeight)) {
+                return rect;
+            }
+        }
+        return false;
+    });
+
+    const filtredLines = mnemoNodeStore.lineList.filter((line) => {
+        if (currentBoard.current) {
+            const parrentDivWidth: number = mainDivWidth;
+            const parrentDivHeight: number = mainDivHeigth;
+            const x1 = line.source.x + line.source.width / 2;
+            const y1 = line.source.y + line.source.height / 2;
+            const x2 = line.target.x + line.target.width / 2;
+            const y2 = line.target.y + line.target.height / 2;
+
+            if (scrollLeft < x1 && x1 < scrollLeft + parrentDivWidth && scrollTop < y1 && y1 < scrollTop + parrentDivHeight) {
+                return line;
+            }
+
+            if (scrollLeft < x2 && x2 < scrollLeft + parrentDivWidth && scrollTop < y2 && y2 < scrollTop + parrentDivHeight) {
+                return line;
+            }
+        }
+
+        return false;
+    });
+
+    // eslint-disable-next-line
     const graph = new ReactFauxDom.Element('svg');
 
-    d3.select("svg")
-        .attr("width", '100%')
-        .attr("height", '100%')
+    d3.select('svg')
+        .attr('width', '1600px')
+        .attr('height', '1000px');
 
     d3.select(graph)
-        .selectAll("path")
-        .data(links)
-        .join("path")
+        .selectAll('path')
+        .data(filtredLines)
+        .join('path')
         .attr('stroke', 'black')
         .attr('fill', 'none')
         .attr('d', d3.link<any, IMnemoNode>(curve)
@@ -34,8 +70,8 @@ const ViewPanel = (props: IViewPanelProps) => {
     const rects = d3
         .select(graph)
         .selectAll('g')
-        .data(nodes)
-        .join('g')
+        .data(filtredNodes)
+        .join('g');
 
     rects.append('rect')
         .attr('width', (d) => d.width + 8)
@@ -50,7 +86,7 @@ const ViewPanel = (props: IViewPanelProps) => {
         .attr('stroke-dasharray', 4);
 
     rects.append('rect')
-        .attr("fill", 'orange')
+        .attr('fill', 'orange')
         .attr('stroke', 'black')
         .attr('width', (d) => d.width)
         .attr('height', (d) => d.height)
@@ -91,18 +127,44 @@ const ViewPanel = (props: IViewPanelProps) => {
             //simulation.alphaTarget(0).restart();
         }
         d3.selectAll('g')
-            .data(nodes)
-            .on("click", (event, d) => {
+            .data(filtredNodes)
+            .on('click', (event, d) => {
                 if (event.defaultPrevented) return;
                 mnemoNodeStore.setActive(d);
             })
             .call(d3.drag<any, IMnemoNode>()
-                .on("start", dragStart)
-                .on("drag", dragged)
-                .on("end", dragEnd));
-    }, [graph, nodes, links]);
+                .on('start', dragStart)
+                .on('drag', dragged)
+                .on('end', dragEnd));
+    }, [filtredNodes, filtredLines]);
 
-    return graph!.toReact();
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver((elem) => {
+            setMainDivHeigth(currentBoard.current?.offsetHeight || 0);
+            setMainDivWidth(currentBoard.current?.offsetWidth || 0);
+        });
+        if (currentBoard.current) {
+            resizeObserver.observe(currentBoard.current);
+        }
+        return () => resizeObserver.disconnect();
+    },[]);
+
+    return (
+        <div
+            ref={currentBoard}
+            style={{
+                width: '100%',
+                height: '100%',
+                overflow: 'auto',
+            }}
+            onScroll={(event) => {
+                setScrollLeft(event.currentTarget.scrollLeft);
+                setScrollTop(event.currentTarget.scrollTop);
+            }}
+            >
+            {graph!.toReact()}
+        </div>
+    );
 }
 
 export default observer(ViewPanel);

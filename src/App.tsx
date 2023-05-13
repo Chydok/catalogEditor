@@ -13,7 +13,6 @@ import boardLineStore from "./stores/boardLineStore";
 import './styles/App.css';
 import MnemonicEditor from "./components/MnemonicEditor/MnemonicEditor";
 import mnemoNodeStore from "./stores/mnemoNodeStore";
-import {min} from "d3";
 
 blockListStore.removeAllBlock();
 boardStore.removeAllBoards();
@@ -53,7 +52,7 @@ boardLineStore.addBlockLine({id: 4, name: '', boardStructure: [{nameEn: 'name', 
 
 let line = 0;
 let minus = 0;
-const itemTest = 10;
+const itemTest = 2000;
 for (let i = 0; i < itemTest; i++) {
     if ((i - minus) * 150 > 1450) {
         minus += 10;
